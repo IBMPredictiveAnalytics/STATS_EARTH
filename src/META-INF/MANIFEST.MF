@@ -1,0 +1,18 @@
+Name: STATS_EARTH
+Display-Name: EARTH(Multiple Adaptive Regression)
+Dialog-Specs: dialog354.cfe
+Command-Specs: STATS_EARTH.XML,STATS_INSERT_CHART.XML
+Code-Files: STATS_INSERT_CHART.py,STATS_EARTH.R
+Misc-Files: extsyntax.css,earth-notes.pdf,LICENSE,markdown.html
+Summary: Estimate and predict MARS models
+Description: This procedure implements Multiple Adaptive Regression Sp
+ line models that find nonlinearities and interaction terms in general
+ ized linear models and do emplirical variable selection.
+Author: Jon K. Peck
+Version: 1.0.0
+Product-Version: 31
+Date: 4/1/2025
+Categories: MARS, EARTH, regression
+Plugins: Python,R
+Python-Version: 3
+R-Packages: earth

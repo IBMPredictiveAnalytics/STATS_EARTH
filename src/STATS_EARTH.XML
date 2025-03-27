@@ -1,0 +1,35 @@
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Jon Peck (SPSS Inc.) -->
+<!-- (C) Copyright Jon K Peck, 2024                             -->
+<Command xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="STATS EARTH" Language="R" Mode="Source">
+	<Subcommand Name="" IsArbitrary="False" Occurrence="Optional">
+		<Parameter Name="DEPVAR" ParameterType="VariableName"/>
+		<Parameter Name="INDVARS" ParameterType="VariableNameList"/>
+		<Parameter Name="LINEARVARS" ParameterType="VariableNameList"/>
+		<Parameter Name="IDVAR" ParameterType="VariableName"/>
+		<Parameter Name="PREDDATASET" ParameterType="VariableName"/>
+		<Parameter Name="PREDTYPE" ParameterType="Keyword"/>
+		<Parameter Name="ESTIMATE" ParameterType="Keyword"/>
+		<Parameter Name="PREDICT" ParameterType="Keyword"/>
+		<Parameter Name="SAVEMODEL" ParameterType="OutputFile"/>
+		<Parameter Name="MODELSOURCE" ParameterType="InputFile"/>
+		<Parameter Name="DATASOURCE" ParameterType="Keyword"/>
+		<Parameter Name="FAMILY" ParameterType="Keyword"/>
+	</Subcommand>
+	<Subcommand Name="OPTIONS">
+		<Parameter Name="NFOLD" ParameterType="Integer"/>
+		<Parameter Name="DEGREE" ParameterType="Integer"/>
+		<Parameter Name="MAXTERMS" ParameterType="Integer"/>
+		<Parameter Name="IGNORETHIS" ParameterType="Keyword"/>
+	</Subcommand>
+	<Subcommand Name="DISPLAY">
+		<Parameter Name="MODELPLOTS" ParameterType="Keyword"/>
+		<Parameter Name="RESPONSEPLOTS" ParameterType="Keyword"/>
+
+		<Parameter Name="VARIMPPLOT" ParameterType="Keyword"/>
+		<Parameter Name="HEIGHT" ParameterType="Number"/>
+		<Parameter Name="WIDTH" ParameterType="Number"/>
+		<Parameter Name="FONTSIZE" ParameterType="Number"/>
+		<Parameter Name="BGCOLOR" ParameterType="Keyword"/>
+	</Subcommand>
+	<Subcommand Name="HELP" Occurrence="Optional"/>
+</Command>
