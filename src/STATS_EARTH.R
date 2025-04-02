@@ -71,6 +71,7 @@ Warn = function(procname, omsid) {
         # display any accumulated messages as a warnings table or as prints
         # and end procedure state, if any
         
+
         if (lcl$msgnum == 0) {   # nothing to display
             if (inproc) {
                 spsspkg.EndProcedure()
@@ -80,7 +81,7 @@ Warn = function(procname, omsid) {
             procok = inproc
             if (!inproc) {
                 procok =tryCatch({
-                    StartProcedure(lcl$procname, lcl$omsid)
+                    spsspkg.StartProcedure(lcl$procname, lcl$omsid)
                     procok = TRUE
                 },
                 error = function(e) {
@@ -179,22 +180,27 @@ getextloc = function() {
 procname=gtxt("Earth")
 warningsprocname = gtxt("Earth Warnings")
 omsid="STATSEARTH"
-warns = Warn(procname=warningsprocname,omsid=omsid)
+
 
 
 # main worker
 
 doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family="gaussian",
     estimation=TRUE, prediction=FALSE, modelsource=NULL, savemodel=NULL,
-    bgcolor="white", degree=1, nfold=0, maxterms=1000,
+    bgcolor="white", degree=1, nfold=0, maxterms=25,
     modelplots=TRUE, responseplots=TRUE, rptype="model", varimpplot=TRUE,
-    height=8, width=8, fontsize=12,
+    height=8, width=8, fontsize=1.5,
     preddataset=NULL, predtype="link", preddata="training", ignorethis=TRUE
     ) {
 
     domain<-"STATS_EARTH"
     setuplocalization(domain)
+    warns = Warn(procname=warningsprocname,omsid=omsid)
     
+    spsspkg.StartProcedure(gtxt("earth"),"STATS EARTH")
+    if (!any(estimation, prediction, modelplots, responseplots, varimpplot)) {
+        warns$warn(gtxt("Procedure ended.  No output was requested."), dostop=TRUE)
+    }
     weightvar = spssdictionary.GetWeightVariable()
     if (!is.null(weightvar)) {
         warns$warn(gtxt("Case weights are ignored by this procedure"), dostop=FALSE)
@@ -205,6 +211,7 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
     vardict = spssdictionary.GetDictionaryFromSPSS()
     if (!is.null(modelsource)) {
         estimation=FALSE
+        savemodel = NULL
     }
     if (!is.null(preddataset)) {
         if (!is.null(modelsource)) {
@@ -216,6 +223,7 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
                 }
             )
             depvar = researth$spss$depvar   # used in plotting
+
             warns$warn(gtxtf("Model loaded from file: %s and will be used for any requested plots and predictions",
                 modelsource), dostop=FALSE)
             if (!is.null(savemodel)) {
@@ -223,6 +231,7 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
                 savemodel = NULL
             }
             idvar = researth$spss[['idvar']]
+           
         }
         if (is.null(idvar)) {
             warns$warn(gtxt("An ID variable must be specified if predictions are requested"), dostop=TRUE)
@@ -239,13 +248,11 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
         }
     }
 
+    if (!estimation) {
+        savemodel = NULL
+    }
     
-    spsspkg.StartProcedure(gtxt("earth"),"STATS EARTH")
     if (estimation) {
-        if (is.null(depvar) || is.null(indvars)) {
-            warns$warn(gtxt("Dependent and independent variables must be specified if estimating"),
-                dostop=TRUE)
-        }
         nsplitvars = length(spssdata.GetSplitVariableNames())
         if (nsplitvars > 0) {
             warns$warn(gtxt("Split files is not supported by this procedure"), dostop=TRUE)
@@ -256,7 +263,10 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
         indvars = casecorrect(indvars, vardict, warns)
         linearvars = casecorrect(linearvars, vardict, warns)
         indvars = adjustlinear(vardict, indvars, linearvars, warns) # indvars will include linear
-
+        if (is.null(depvar) || is.null(indvars)) {
+            warns$warn(gtxt("Dependent and independent or linear variables must be specified when estimating"),
+                       dostop=TRUE)
+        }
         if (length(intersect(depvar, indvars)) > 0) {
             warns$warn(gtxt("The dependent variable appears in the independent variable list"),
                 dostop=TRUE)
@@ -307,25 +317,42 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
         }
         }, error = function(e) {warns$warn(paste(gtxt("error estimating equation"), e, sep="\n"), dostop=TRUE)}
     )
+    dvfactor = is.factor(dta[[depvar]])
+    if (!is.null(idvar)) {
+        inputdict = spssdictionary.GetDictionaryFromSPSS(c(idvar, depvar))
+        researth[["spssiddata"]] <<- row.names(dta)
+    } else {
+        inputdict = NULL
+    }
+
+    researth$spss <<- list(depvar=depvar, dvfactor=dvfactor, indvars=indvars, idvar=idvar, 
+        inputdict=inputdict,  estdate=date())
         
     displaytables(researth, depvar, indvars, ncases, nfold, degree, maxterms, 
         family, preddataset, savemodel)
 
     # save model with additional information
     if(!is.null(savemodel)) {
-        researth$spss = list(depvar=depvar, indvars=indvars, idvar=idvar, estdate=date())
-        save(researth, file=savemodel)
-        warns$warn(gtxtf("Estimated model saved to file %s", savemodel), dostop=FALSE)
+        tryCatch(
+            {
+            ###print(savemodel)
+            save(researth, file=savemodel)
+            warns$warn(gtxtf("Estimated model saved to file %s", savemodel), dostop=FALSE)
+            }, error=function(e) {warns$warn(
+                paste(gtxtf("Model saving to file %sfailed", savemodel), e, sep="\n"),
+                dostop=TRUE)
+            }
+        )
     }
-    }
-     
+    }     
     # plots   
     if (!exists("researth")) {
         warns$warn(gtxt("There is no estimated model to use for plots."), dostop=TRUE)
     }
 
     plotfiles = list()
-    dvfactor = is.factor(dta[[depvar]])
+    dvfactor = researth$spss$dvfactor
+
     plots = ncol(data.frame(researth$coefficients))
     if (is.null(plots)) {
         plots = list(depvar)
@@ -371,16 +398,29 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
 
         outlinelabel = sprintf("Variable: %s.  Chart ", paste(depvar, collapse=" "))
         labelparm = list()
+        
         ###cmd = sprintf("STATS INSERT CHART CHARTLIST='%s' HEADER='Earth' OUTLINELABEL='%s ' LABELPARM = %s HIDELOG=%s", 
         cmd = sprintf("STATS INSERT CHART CHARTLIST='%s' HEADER='Earth' OUTLINELABEL='%s ' HIDELOG=%s", 
             pfilelist, outlinelabel, TRUE)
+        spsspkg.Submit(cmd)
     }
-    spsspkg.Submit(cmd)
-    
-    if (prediction) {
-        dopred(researth, preddataset, predtype, idvar, row.names(dta), depvar, 
-               is.factor(dta[[depvar]]), family, preddata)
-    }
+
+    spsspkg.StartProcedure(gtxt("earth"),"STATS EARTH")
+        if (prediction) {
+            if (exists("dta")) {
+                iddata = row.names(dta)
+            } else {
+                if ("spssiddata" %in% names(researth)) {
+                    iddata = researth$spssiddata
+                } else {
+                    iddata = NULL
+                }
+            }
+            dopred(researth, preddataset, predtype, iddata, 
+               family, preddata)
+        }
+    spsspkg.Submit(sprintf("Dataset Activate %s", preddataset))
+    spsspkg.StartProcedure(gtxt("earth"),"STATS EARTH")
     warns$display(inproc=FALSE)
 }
 
@@ -498,6 +538,7 @@ displayplot = function(researth, dvfactor, nresponse, height, width,
     # dvfactor is true if the (first) dep var is a factor
     # ptype specifies the type of plot to do
     
+
     if (!dvfactor && rptype == "distribution") {
         warns$warn(gtxt("Distribution plots are not available for scale variables"),
             dostop=FALSE)
@@ -532,14 +573,15 @@ drawtheplot = function(result, nresponse, fontsize, plotbg, ptype, rptype) {
 
         if (ptype == "modelplots") {
                 plot(result, nresponse = nresponse,  
+                     cex.legend=fontsize, cex.axis=fontsize, cex.labels=fontsize,
                      bg ="ivory2")
         }
         if (ptype == "responseplot") {
             if (rptype == "model") {
-                z=capture.output(plotmo(result, nresponse = nresponse, 
+                z=capture.output(plotmo(result, nresponse = nresponse, cex.title=fontsize,
                     bg="ivory2"))
             } else {
-                z=capture.output(plotd(result, nresponse = nresponse, 
+                z=capture.output(plotd(result, nresponse = nresponse, cex.title=fontsize,
                     bg="ivory2"))
             }
         }
@@ -560,11 +602,13 @@ drawtheplot = function(result, nresponse, fontsize, plotbg, ptype, rptype) {
         }
     )
     dev.off()
-   ###print('plot done')
 }
 
-dopred = function(researth, preddataset, predtype, idvar, idvardata, depvar, dvfactor, 
+dopred = function(researth, preddataset, predtype, idvardata,
     family, datasource) {
+    
+    # idvardata will be NULL if data have not been loaded
+    # but in that case, datasource will be newdata and idvardata will come from that
 
     # create a dataset of predicted values along with the idvar variable
     # If a factor and the family is binomial, there is one column for each depvar value
@@ -608,18 +652,25 @@ dopred = function(researth, preddataset, predtype, idvar, idvardata, depvar, dvf
     # response: for logistic, gives probabilities
     # class - factors only
     
-    if (predtype == "class" && !dvfactor) {
+    
+    if (predtype == "class" && !researth$spss$dvfactor) {
         warns$warn(gtxt("Prediction type class is only for factors"), dostop=TRUE)
     }
+    spsspkg.EndProcedure()
+    idvar = researth$spss$idvar
+    depvar = researth$spss$depvar
+    if (is.null(idvar)) {
+        warns$warn(gtxt("No ID variable was specified in estimation.  Predictions cannot be made",
+            dostop=TRUE))
+    }
+    inputdict = researth$spss$inputdict
     # dict record is varName, varLabel, varType, varFormat, varMeasurementLevel
-    inputdict = spssdictionary.GetDictionaryFromSPSS(c(idvar, depvar))
     if (datasource == "training") {
         preds = predict(researth, type=predtype)
     } else {
         # get new data
-        depvar = researth$spss[['depvar']]
         indvars = researth$spss[['indvars']]  # includes linearvars
-        idvar =  researth$spss[['idvar']]
+
         tryCatch(
             {
             # all the independent vars actually used
@@ -632,7 +683,7 @@ dopred = function(researth, preddataset, predtype, idvar, idvardata, depvar, dvf
         )
 
         idvardata = row.names(dta)
-        warns$warn(gtxt("Data source is new data"), dostop=FALSE)
+        warns$warn(gtxt("Prediction data source is new data"), dostop=FALSE)
         preds = predict(researth, type=predtype, newdata=dta)
     }
     ncols = ncol(preds)
@@ -649,7 +700,7 @@ dopred = function(researth, preddataset, predtype, idvar, idvardata, depvar, dvf
         varspec = list()
         varspec[[1]] = cn[[col]]  # var name
         varspec[[2]] = ""
-        if (!dvfactor || predtype == "class") {
+        if (!researth$spss$dvfactor || predtype == "class") {
             varspec[[3]] = dvinfo[[3]]
             varspec[[4]] = dvinfo[[4]]
             varspec[[5]] = dvinfo[[5]]
@@ -660,18 +711,76 @@ dopred = function(researth, preddataset, predtype, idvar, idvardata, depvar, dvf
         }
          dictlist[[col+1]] = unlist(varspec)
     }
+
+    
     dict = spssdictionary.CreateSPSSDictionary(dictlist)
     preds = data.frame(cbind(idvardata, preds))
-    ###save(preds, dict, dictlist, idvardata, preddataset, file="c:/temp/dataset.rdata")
-    tryCatch(
-        {
-        spssdictionary.SetDictionaryToSPSS(preddataset, dict)
-
-        spssdata.SetDataToSPSS(preddataset, preds) #row.names(preddata)?
-        spssdictionary.EndDataStep()
-        }
-    )
+    ###save(dict, preds, idvardata, dictlist, dvinfo, file="c:/temp/pred.rdata")
+    csvtospss(preddataset, dict, preds)
+    # tryCatch(
+    #     {
+    #     spssdictionary.SetDictionaryToSPSS(preddataset, dict)
+    #     print(sprintf("SetDataToSPSS... %s", date()))
+    #     spssdata.SetDataToSPSS(preddataset, preds) #row.names(preddata)?
+    #     print(sprintf("back from SetDataToSPSS... %s", date()))
+    #     },
+    #     error=function(e) {
+    #         spssdictionary.EndDataStep()
+    #         warns$warn(paste(gtxt("Error creating prediction dataset"), e, sep="\n"),
+    #             dostop=TRUE)
+    #     }
+    # )
+    # print(sprintf("ending DataStep %s", date()))
+    # spssdictionary.EndDataStep()
+    # print(sprintf("datastep ended %s", date()))
+    ###print(sprintf("prediction dataset complete: %s", date()))
     
+}
+
+csvtospss = function(preddataset, dict, preds) {
+    # save a temporary csv file and read into SPSS
+    # preddataset is the datgaset name for the prediction data
+    # activedatset is the name of the active dataset
+    # dict is the spss dictionary object for the prediction data
+    # preds is the data
+    
+    csvfile = tempfile("csvpred", tmpdir=tempdir(), fileext=".csv")
+    write.csv(preds, file=csvfile, row.names=FALSE)
+    spsscmd = sprintf('
+        PRESERVE.
+        SET DECIMAL DOT.
+        GET DATA  /TYPE=TXT
+        /FILE="%s"
+        /ENCODING="UTF8"
+        /DELCASE=LINE
+        /DELIMITERS=","
+        /QUALIFIER=""""
+        /ARRANGEMENT=DELIMITED
+        /FIRSTCASE=2
+        /VARIABLES=', csvfile)
+    
+    varspecs = list()
+    for (v in 1:ncol(dict)) {
+        if (!strsplit(dict[["varFormat", v]], "\\d+") %in% c('A', 'F')) {
+            dict[["varFormat", v]] = "F"
+        }
+    }
+    for (v in 1:ncol(dict)) {
+        varspecs = append(varspecs, paste(dict[["varName", v]], dict[["varFormat", v]], sep=" "))
+    }
+    varspecs = paste(varspecs, collapse="\n")
+    activedataset = getactivedsname()
+    cmd = paste(spsscmd, varspecs, ".\n", sprintf("dataset name %s.", preddataset), collapse="\n")
+    spsspkg.Submit(cmd)
+    spsspkg.Submit("RESTORE.")
+    spsspkg.Submit(sprintf("DATASET ACTIVATE %s.", activedataset))
+    # Can't delete the file - permission denied
+    # tryCatch(
+    #     {
+    #     file.remove(csvfile)
+    #     }, error = function(e) {warns$warn(paste(gtxtf("Temporary file could not be deleted: %s", csvfile),
+    #             e, collapse="\n"), dostop=FALSE)}
+    # )
 }
 
 # subpunct approximates characters invalid in SPSS variable names
@@ -700,6 +809,19 @@ fixnames = function(names) {
         newnames = append(newnames, newname)
     }
     return(newnames)
+}
+
+getactivedsname = function() {
+    # There is no api for this
+
+    ds = spssdata.GetOpenedDataSetList()
+    spsspkg.Submit("DATASET NAME X44074_60093_.")  # renames active dataset
+    ds2 = spssdata.GetOpenedDataSetList()
+    diff = setdiff(ds, ds2)  # find out which one changed
+    spsspkg.Submit("DATASET ACTIVATE X44074_60093_.")  # reactivate the previously active one
+    cmd = sprintf("DATASET NAME %s.", diff)   # and give it back its name
+    spsspkg.Submit(cmd)
+    return(diff)
 }
 
 setuplocalization = function(domain) {

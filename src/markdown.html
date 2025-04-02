@@ -81,7 +81,7 @@ RESPONSEPLOTS = YES<sup>&#42;&#42;</sup> or NO<br/>
 VARIMPPLOT = YES<sup>&#42;&#42;</sup> or NO<br/>
 HEIGHT = plot height in inches<br/>
 WIDTH = plot height in inches<br/>
-FONTSIZE = integer for plot font in points<br/>
+FONTSIZE = value for plot expansion factor<br/>
 </p>
 
 
@@ -94,7 +94,7 @@ FONTSIZE = integer for plot font in points<br/>
 <pre class="example"><code>
 STATS EARTH DEPVAR=salary INDVARS=jobcat jobtime prevexp minority 
 IDVAR=id ESTIMATE = YES
-/DISPLAY HEIGHT=8 WIDTH=8 FONTSIZE=12.
+/DISPLAY HEIGHT=8 WIDTH=8 FONTSIZE=1.5.
 </code></pre>
 
 <h2>Details</h2>
@@ -160,8 +160,8 @@ displayed.</p>
 <p><strong>HEIGHT</strong> and <strong>WIDTH</strong> specify the dimensions of the plots
 in inches.</p>
 
-<p><strong>FONTSIZE</strong> specifie the desired font size in points.  It may, however, not
-be effective in some plots.</p>
+<p><strong>FONTSIZE</strong> specifie the desired font text expansion factor.  A value of 1
+means no expansion.  The default is 1.5</p>
 
 <h2>Acknowledgements</h2>
 <p>The R package citation is<br>
