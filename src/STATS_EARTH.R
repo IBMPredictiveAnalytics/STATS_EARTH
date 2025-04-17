@@ -20,7 +20,7 @@ gtxtf <- function(...) {
 
 loadmsg = "The R %s package is required but could not be loaded."
 tryCatch(suppressWarnings(suppressPackageStartupMessages(library(earth, warn.conflicts=FALSE))), error=function(e){
-    stop(gtxtf(loadmsg,"partykit"), call.=FALSE)
+    stop(gtxtf(loadmsg,"earth"), call.=FALSE)
 }
 )
 
@@ -186,8 +186,8 @@ omsid="STATSEARTH"
 # main worker
 
 doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family="gaussian",
-    estimation=TRUE, prediction=FALSE, modelsource=NULL, savemodel=NULL,
-    bgcolor="white", degree=1, nfold=0, maxterms=25,
+    estimation=TRUE, prediction=FALSE, modelsource=NULL, savemodel=NULL, pthresh=.5,
+    bgcolor="white", degree=1, nfold=0, ncross=1, maxterms=25,
     modelplots=TRUE, responseplots=TRUE, rptype="model", varimpplot=TRUE,
     height=8, width=8, fontsize=1.5,
     preddataset=NULL, predtype="link", preddata="training", ignorethis=TRUE
@@ -276,6 +276,10 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
         ###save(indvars, depvar, indvarsplus, f, file="c:/temp/frml.rdata")
         f = as.formula(f)
         allvars = c(depvar, indvars)
+        if (ncross > 1 && nfold <= 1) {
+            ncross = 1
+            warns$warn(gtxt("Number of folds must be > 1 to use multiple crossvalidation.  Ignorning"),
+            dostop=FALSE)}
 
         # get data api requires case match
         tryCatch(
@@ -304,15 +308,15 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
         if (family != "none") {
             researth <<- 
                 earth(formula=f, data=dta, linpreds=lps,
-                nfold = nfold,
+                nfold = nfold, ncross=ncross,
                 glm = list(family = family),
                 degree = degree,
                 nk = maxterms)
         } else {  # no GLM
             researth <<- 
                 earth(formula=f, data=dta, linpreds=lps,
-                      nfold = nfold,
-                      degree = degree,
+                      nfold = nfold, ncross=ncross,
+                      degree = degree, 
                       nk = maxterms)
         }
         }, error = function(e) {warns$warn(paste(gtxt("error estimating equation"), e, sep="\n"), dostop=TRUE)}
@@ -329,13 +333,12 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
         inputdict=inputdict,  estdate=date())
         
     displaytables(researth, depvar, indvars, ncases, nfold, degree, maxterms, 
-        family, preddataset, savemodel)
+        family, preddataset, savemodel, ncross, pthresh)
 
     # save model with additional information
     if(!is.null(savemodel)) {
         tryCatch(
             {
-            ###print(savemodel)
             save(researth, file=savemodel)
             warns$warn(gtxtf("Estimated model saved to file %s", savemodel), dostop=FALSE)
             }, error=function(e) {warns$warn(
@@ -417,20 +420,23 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
                 }
             }
             dopred(researth, preddataset, predtype, iddata, 
-               family, preddata)
+               family, preddata, pthresh)
         }
-    spsspkg.Submit(sprintf("Dataset Activate %s", preddataset))
+    if (!is.null(preddataset)) {
+        spsspkg.Submit(sprintf("Dataset Activate %s", preddataset))
+    }
+
     spsspkg.StartProcedure(gtxt("earth"),"STATS EARTH")
     warns$display(inproc=FALSE)
 }
 
 
 displaytables = function(researth, depvar, indvars, ncases, nfold, degree, 
-    maxterms, family, preddataset, savemodel) {
+    maxterms, family, preddataset, savemodel, ncross, pthresh) {
     # display all the tables
     
     displayparameters(researth, depvar, indvars, ncases, nfold, degree, 
-        maxterms, family, preddataset, savemodel)
+        maxterms, family, preddataset, savemodel, ncross, pthresh)
     
     # summary table
     ss = summary(researth)
@@ -488,19 +494,21 @@ h( ) is the hinge function.  See dialog help", depvar))
 
 
 displayparameters = function(researth, depvar, indvars, ncases, nfold, degree, 
-    nk, family, preddataset, savemodel) {
+    nk, family, preddataset, savemodel, ncross, pthresh) {
     # display parameters and input statistics
 
     labels = list(
         gtxt("Dependent Variable"),
         gtxt("Independent Variables"),
         gtxt("Maximum Interaction Degree Allowed"),
-        gtxt("Number of Cross-Validation Folds"),
+        gtxt("Cross-Validation Folds"),
+        gtxt("Cross Validations"),
         gtxt("Distribution Family"),
         gtxt("Maximum Terms"),
         gtxt("Estimation Date"),
         gtxt("Number of Complete Cases"),
         gtxt("Prediction Dataset"),
+        gtxt("Prediction Threshold"),
         gtxt("Saved Model File")
     )
     values = list(
@@ -508,11 +516,13 @@ displayparameters = function(researth, depvar, indvars, ncases, nfold, degree,
         paste(indvars, collapse=", "),
         degree, 
         nfold,
+        ncross,
         family,
         nk,
         date(),
         ncases,
         ifelse(is.null(preddataset), "--", preddataset),
+        pthresh,
         ifelse(is.null(savemodel), "--", savemodel)
     )
 
@@ -605,7 +615,7 @@ drawtheplot = function(result, nresponse, fontsize, plotbg, ptype, rptype) {
 }
 
 dopred = function(researth, preddataset, predtype, idvardata,
-    family, datasource) {
+    family, datasource, pthresh) {
     
     # idvardata will be NULL if data have not been loaded
     # but in that case, datasource will be newdata and idvardata will come from that
@@ -666,7 +676,7 @@ dopred = function(researth, preddataset, predtype, idvardata,
     inputdict = researth$spss$inputdict
     # dict record is varName, varLabel, varType, varFormat, varMeasurementLevel
     if (datasource == "training") {
-        preds = predict(researth, type=predtype)
+        preds = predict(researth, type=predtype, thresh=pthresh)
     } else {
         # get new data
         indvars = researth$spss[['indvars']]  # includes linearvars
@@ -684,7 +694,7 @@ dopred = function(researth, preddataset, predtype, idvardata,
 
         idvardata = row.names(dta)
         warns$warn(gtxt("Prediction data source is new data"), dostop=FALSE)
-        preds = predict(researth, type=predtype, newdata=dta)
+        preds = predict(researth, type=predtype, newdata=dta, thresh=pthresh)
     }
     ncols = ncol(preds)
     idinfo = inputdict[, inputdict['varName', ] == idvar]
@@ -715,7 +725,7 @@ dopred = function(researth, preddataset, predtype, idvardata,
     
     dict = spssdictionary.CreateSPSSDictionary(dictlist)
     preds = data.frame(cbind(idvardata, preds))
-    ###save(dict, preds, idvardata, dictlist, dvinfo, file="c:/temp/pred.rdata")
+
     csvtospss(preddataset, dict, preds)
     # tryCatch(
     #     {
@@ -815,11 +825,11 @@ getactivedsname = function() {
     # There is no api for this
 
     ds = spssdata.GetOpenedDataSetList()
-    spsspkg.Submit("DATASET NAME X44074_60093_.")  # renames active dataset
+    spsspkg.Submit("DATASET NAME X44074_60093_")  # renames active dataset
     ds2 = spssdata.GetOpenedDataSetList()
     diff = setdiff(ds, ds2)  # find out which one changed
-    spsspkg.Submit("DATASET ACTIVATE X44074_60093_.")  # reactivate the previously active one
-    cmd = sprintf("DATASET NAME %s.", diff)   # and give it back its name
+    spsspkg.Submit("DATASET ACTIVATE X44074_60093_")  # reactivate the previously active one
+    cmd = sprintf("DATASET NAME %s", diff)   # and give it back its name
     spsspkg.Submit(cmd)
     return(diff)
 }
@@ -853,17 +863,19 @@ Run<-function(args){
         spsspkg.Template("ESTIMATE", subc="", ktype="bool", var="estimation",islist=FALSE),
         spsspkg.Template("PREDICT", subc="", ktype="bool", var="prediction",islist=FALSE),
         spsspkg.Template("FAMILY", subc="", ktype="str", var="family", islist=FALSE,
-            vallist=list("gaussian", "binomial", "poisson", "gamma", "none")),
+            vallist=list("gaussian", "binomial", "quasibinomial", "poisson", "gamma", "none")),
         spsspkg.Template("PREDDATASET", subc="", ktype="varname", var="preddataset", islist=FALSE),
         spsspkg.Template("PREDTYPE", subc="", ktype="str", var="predtype",
             vallist=list("link", "response", "class"), islist=FALSE),
+        
         spsspkg.Template("MODELSOURCE", subc="", ktype="literal", var="modelsource", islist=FALSE),
         spsspkg.Template("DATASOURCE", subc="", ktype="str", var="preddata", 
             vallist=list("training", "newdata"), islist=FALSE),
-
+        spsspkg.Template("PTHRESH", subc="", ktype="float", var="pthresh", islist=FALSE),
         spsspkg.Template("SAVEMODEL", subc="", ktype="literal", var="savemodel", islist=FALSE),
         
         spsspkg.Template("NFOLD", subc="OPTIONS", ktype="int", var="nfold", islist=FALSE),
+        spsspkg.Template("NCROSS", subc="OPTIONS", ktype="int", var="ncross", islist=FALSE),
         spsspkg.Template("DEGREE", subc="OPTIONS", ktype="int", var="degree", islist=FALSE),
         spsspkg.Template("MAXTERMS", subc="OPTIONS", ktype="int", var="maxterms", islist=FALSE,
                          vallist=list(1, 1000)),

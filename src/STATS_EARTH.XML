@@ -10,6 +10,7 @@
 		<Parameter Name="PREDTYPE" ParameterType="Keyword"/>
 		<Parameter Name="ESTIMATE" ParameterType="Keyword"/>
 		<Parameter Name="PREDICT" ParameterType="Keyword"/>
+		<Parameter Name="PTHRESH" ParameterType="Number"/>
 		<Parameter Name="SAVEMODEL" ParameterType="OutputFile"/>
 		<Parameter Name="MODELSOURCE" ParameterType="InputFile"/>
 		<Parameter Name="DATASOURCE" ParameterType="Keyword"/>
@@ -17,6 +18,7 @@
 	</Subcommand>
 	<Subcommand Name="OPTIONS">
 		<Parameter Name="NFOLD" ParameterType="Integer"/>
+		<Parameter Name="NCROSS" ParameterType="Integer"/>
 		<Parameter Name="DEGREE" ParameterType="Integer"/>
 		<Parameter Name="MAXTERMS" ParameterType="Integer"/>
 		<Parameter Name="IGNORETHIS" ParameterType="Keyword"/>
@@ -24,7 +26,6 @@
 	<Subcommand Name="DISPLAY">
 		<Parameter Name="MODELPLOTS" ParameterType="Keyword"/>
 		<Parameter Name="RESPONSEPLOTS" ParameterType="Keyword"/>
-
 		<Parameter Name="VARIMPPLOT" ParameterType="Keyword"/>
 		<Parameter Name="HEIGHT" ParameterType="Number"/>
 		<Parameter Name="WIDTH" ParameterType="Number"/>
