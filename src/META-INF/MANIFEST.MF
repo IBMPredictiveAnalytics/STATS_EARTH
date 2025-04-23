@@ -1,5 +1,4 @@
 Name: STATS_EARTH
-Display-Name: Multiple Adaptive Regression Splines
 Dialog-Specs: dialog354.cfe
 Command-Specs: STATS_EARTH.XML,STATS_INSERT_CHART.XML
 Code-Files: STATS_INSERT_CHART.py,STATS_EARTH.R
@@ -17,4 +16,3 @@ Plugins: Python,R
 Python-Version: 3
 R-Packages: earth
 Translation-Catalogues: 
-
