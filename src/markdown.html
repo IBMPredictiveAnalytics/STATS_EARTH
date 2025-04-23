@@ -61,9 +61,10 @@ The union of INDVARS and LINEARVARS must have at least one variable.<br/>
 IDVAR = variable - required if predicting<br/>
 ESTIMATE = YES<sup>&#42;&#42;</sup> or NO<br/>
 PREDICT = NO<sup>&#42;&#42;</sup> or YES<br/>
-FAMILY = GAUSSIAN<sup>&#42;&#42;</sup> or BINOMIAL or POISSON, or GAMMA or NONE<br/>
+FAMILY = GAUSSIAN<sup>&#42;&#42;</sup> or BINOMIAL or QUASIBINOMIAL or POISSON, or GAMMA or NONE<br/>
 PREDDATASET = name for prediction dataset.  Required if predicting <br/>
 PREDTYPE = LINK<sup>&#42;&#42;</sup> or RESPONSE or CLASS</br>
+PTHRESH = probability</br>
 MODELSOURCE = "filespec" for a saved model to use instead of estimating<br/>
 DATASOURCE = TRAINING<sup>&#42;&#42;</sup> or NEWDATA<BR/>
 SAVEMODEL = "filespec" for saving the estimated model<br/>
@@ -71,6 +72,7 @@ SAVEMODEL = "filespec" for saving the estimated model<br/>
 
 <p>/OPTIONS<br/>
 NFOLD = number of folds for cross validation<br/>
+NCROSS = number of cross validations</br>
 DEGREE = order of interaction terms to look for<br/>
 MAXTERMS = maximum number of terms allowed in the model</BR>
 <p>
@@ -82,6 +84,7 @@ VARIMPPLOT = YES<sup>&#42;&#42;</sup> or NO<br/>
 HEIGHT = plot height in inches<br/>
 WIDTH = plot height in inches<br/>
 FONTSIZE = value for plot expansion factor<br/>
+BGCOLOR = color name<br/>
 </p>
 
 
@@ -110,7 +113,7 @@ can be specified via <strong>MODELSOURCE</STRONG> for use in plots and predictio
 <p><p><strong>DEPVAR</strong> specifies the dependent variables for the equation. The measurement level determines
 the type of equation but the appropriate family should be chosen.  Only categorical versus scale matters</p>
 
-<p><strong>INDVARS</strong> is the list of categorical and scale independent variables.  Categorical variables
+<p><strong>INDVARS</strong> is the list of categorical and s cale independent variables.  Categorical variables
 will be recoded into a set of one-hot dummy variables The names of the reocded variables have the form
 variable-name-category.  For example, jobcat3 refers to category 3 of the jobcat variable.</p>
 
@@ -127,6 +130,21 @@ can be either what is estimated if ESTIMATE = YES, or a previously estimated mod
 The most recently estimated model is automatically available in the same session when the
 command is reinvoked.</p>
 
+<p><strong>PREDTYPE</strong> specifies the type of the prediction.  The default, LINK, is on the scale of the linear predictors. 
+RESPONSE is on the scale of the response variable. Thus for a default binomial model the default predictions are of log-odds (
+probabilities on logit scale) and type = "response" gives the predicted probabilities.
+Use  CLASS to get the predicted class. With CLASS, 	it first makes predictions with type=RESPONSE 
+and then assigns the predicted values to classes as follows.
+<UL>
+
+<li> If the response is numeric, i.e., scale, predict that class if the predicted value is greater than PTHRESH.</li> 
+
+<LI>If the response is a two level categorical variable, predict the second level if its probability is more than PTHRESH. 
+In other words, with the default thresh=0.5 predict the most probable level.</LI>
+
+<li>If the response is a three or more level categorical variable, predict the most probable level (and PTHRESH is ignored).</LI>
+</UL>
+
 <p><strong>MODELSOURCE</strong> specifies a model file previously saved be used for prediction.
 If none is specified, the in-memory model is used.</>
 
@@ -140,6 +158,9 @@ dataset for which predictions be made or change the case selection and then runn
 
 <p><strong>NFOLD</strong> specifies the number of folds for cross validation.  The default
 is 0, which means no cross validation.  Typical values would be 5 or 10.</p>
+
+<p><strong>NCROSS</strong> specifies the number of cross validations each with NFOLD folds.
+NFOLD must be greater than 1 or this setting is ignored.</p>
 
 <p><strong>DEGREE</strong> specifies the interaction order to be considered.  The default is 1,
 which means no interactions.</p>
@@ -160,8 +181,11 @@ displayed.</p>
 <p><strong>HEIGHT</strong> and <strong>WIDTH</strong> specify the dimensions of the plots
 in inches.</p>
 
-<p><strong>FONTSIZE</strong> specifie the desired font text expansion factor.  A value of 1
+<p><strong>FONTSIZE</strong> specifies the desired font text expansion factor.  A value of 1
 means no expansion.  The default is 1.5</p>
+
+<p><strong>BGCOLOR</STRONG> color name for plot backgrounds.  Any R color name may be specified.
+The default is ivory2.</p>
 
 <h2>Acknowledgements</h2>
 <p>The R package citation is<br>
@@ -172,12 +196,10 @@ The R module used by this procedure is the work of
 Stephen Milborrow, Trevor Hastie, Rob Tibshirani, Alan Miller, and Thomas Lumley
 based on Friedman's papers "Fast MARS" and
 "Multivariate Adaptive Regression Splines".
-<p>These authors were not involved in the development of the SPSS procedure and
-bear no responsibility for any issuses.  The SPSS procedure is the work of
-Jon K. Peck
+<p>The SPSS procedure is the work of Jon K. Peck
 </p>
 
-<p style="font-size:80%;">© Copyright Jon K. Peck 2024</p>
+<p style="font-size:80%;">© Copyright Jon K. Peck 2025</p>
 </body>
 
 </html>

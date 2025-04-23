@@ -187,7 +187,7 @@ omsid="STATSEARTH"
 
 doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family="gaussian",
     estimation=TRUE, prediction=FALSE, modelsource=NULL, savemodel=NULL, pthresh=.5,
-    bgcolor="white", degree=1, nfold=0, ncross=1, maxterms=25,
+    bgcolor="ivory2", degree=1, nfold=0, ncross=1, maxterms=25,
     modelplots=TRUE, responseplots=TRUE, rptype="model", varimpplot=TRUE,
     height=8, width=8, fontsize=1.5,
     preddataset=NULL, predtype="link", preddata="training", ignorethis=TRUE
@@ -212,6 +212,9 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
     if (!is.null(modelsource)) {
         estimation=FALSE
         savemodel = NULL
+    }
+    if (!prediction) {
+        preddataset = NULL
     }
     if (!is.null(preddataset)) {
         if (!is.null(modelsource)) {
@@ -584,20 +587,20 @@ drawtheplot = function(result, nresponse, fontsize, plotbg, ptype, rptype) {
         if (ptype == "modelplots") {
                 plot(result, nresponse = nresponse,  
                      cex.legend=fontsize, cex.axis=fontsize, cex.labels=fontsize,
-                     bg ="ivory2")
+                     bg =plotbg)
         }
         if (ptype == "responseplot") {
             if (rptype == "model") {
                 z=capture.output(plotmo(result, nresponse = nresponse, cex.title=fontsize,
-                    bg="ivory2"))
+                    bg=plotbg, cex.labels=fontsize, cex.legend=fontsize, cex.axis=fontsize))
             } else {
                 z=capture.output(plotd(result, nresponse = nresponse, cex.title=fontsize,
-                    bg="ivory2"))
+                    bg=plotbg, cex.legend=fontsize))
             }
         }
         if (ptype == "varimpplot") {
             ev = evimp(researth)
-            par(bg="ivory2")    
+            par(bg=plotbg)    
             z = capture.output(plot(ev))
         }
                 
@@ -701,11 +704,11 @@ dopred = function(researth, preddataset, predtype, idvardata,
     dvinfo =  inputdict[, inputdict['varName', ] == depvar]
     dictlist = list()
     dictlist[[1]] = idinfo
-    ###save(idinfo, dvinfo, preds, file="c:/temp/dictinfo.rdata")
-    colnames(preds) = fixnames(colnames(preds))
+    # in case idvar name occurs as a category in predictions, 
+    # inxlusw it in list of names but ignore it as a column name
+    colnames(preds) = fixnames(c(idvar, colnames(preds)))[-1] # omit idvar
     ###spsspkg.EndProcedure()
     cn = colnames(preds)
-
     for (col in 1: ncol(preds)) {  # todo: response types
         varspec = list()
         varspec[[1]] = cn[[col]]  # var name
@@ -784,13 +787,8 @@ csvtospss = function(preddataset, dict, preds) {
     spsspkg.Submit(cmd)
     spsspkg.Submit("RESTORE.")
     spsspkg.Submit(sprintf("DATASET ACTIVATE %s.", activedataset))
-    # Can't delete the file - permission denied
-    # tryCatch(
-    #     {
-    #     file.remove(csvfile)
-    #     }, error = function(e) {warns$warn(paste(gtxtf("Temporary file could not be deleted: %s", csvfile),
-    #             e, collapse="\n"), dostop=FALSE)}
-    # )
+    spsspkg.Submit("EXECUTE")
+    unlink(csvfile)
 }
 
 # subpunct approximates characters invalid in SPSS variable names
@@ -802,22 +800,28 @@ fixnames = function(names) {
     # this function may not perfectly match SPSS name rules
     
     newnames = c()
+    newnameslc = c()
     for (name in names) {
         newname = gsub(subpunct, "_", name)   # eliminate disallowed characters
         newname = gsub("(^[0-9])", "X_\\1", newname)  # fix names starting with digit
         newname = gsub("^\\.|\\.$", "_", newname)  # fix names starting or ending with "."
         # }
         # ensure that there are no duplicate names
+        # preserve case but compare caselessly
         basename = newname
         for (i in 1:1000) {
-            if (!(newname %in% newnames)) {
+            newnamelc = tolower(newname)
+            if (!newnamelc %in% newnameslc) {
                 break
             } else {
                 newname = paste(basename, i, sep="_")
+                newnamelc = tolower(newname)
             }
         }
         newnames = append(newnames, newname)
+        newnameslc = append(newnameslc, newnamelc)
     }
+
     return(newnames)
 }
 
@@ -886,7 +890,6 @@ Run<-function(args){
         ###spsspkg.Template("RPTYPE", subc="DISPLAY", ktype="str", var="rptype",
             ###vallist=list("model", "distribution"), islist=FALSE),
         spsspkg.Template("VARIMPPLOT", subc="DISPLAY", ktype="bool", var="varimpplot", islist=FALSE), 
-        
         spsspkg.Template("HEIGHT", subc="DISPLAY", ktype="float", var="height", islist=FALSE),
         spsspkg.Template("WIDTH", subc="DISPLAY", ktype="float", var="width", islist=FALSE),
         spsspkg.Template("FONTSIZE", subc="DISPLAY", ktype="float", var="fontsize", islist=FALSE),
