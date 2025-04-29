@@ -2,8 +2,8 @@
 
 # history
 # 13-Nov-2024  Original vesion
-# 09-Dec-2024  Update to handle multiple charts on one call via a file of names
-# 11-Mar-2025  handle no LABELPARM case
+# 09-Dec-2024  update to handle multiple charts on one call via a file of names
+# 27-apr-2025  minor edits
 
 # Author: Jon K. Peck
 
@@ -15,7 +15,6 @@
  
 import spss, SpssClient
 from extension import Template, Syntax, processcmd
-import time
 
 def doinsertcharts(chartlist=None, header=None, outlinelabel=None, labelparm=None, hidelog=False):
     """Insert one or more charts into the Viewer
@@ -50,19 +49,15 @@ def doinsertcharts(chartlist=None, header=None, outlinelabel=None, labelparm=Non
     itemlist = doc.GetOutputItems()
     # Get the root header item
     root = itemlist.GetItemAt(0).GetSpecificType()
+    theHeader = doc.CreateHeaderItem(header)
+    root.InsertChildItem(theHeader, root.GetChildCount())
+    headerItem = root.GetChildItem(root.GetChildCount()-1)
+    if not headerItem.GetType() ==  SpssClient.OutputItemType.HEAD:
+        root.RemoveChildItem(root.GetChildCount()-1)
+        headerItem =  root.GetChildItem(root.GetChildCount()-1)
+    headerItem = root.GetChildItem(root.GetChildCount()-1).GetSpecificType()
+
     for position, chart in enumerate(charts):
-        # Create a new header item
-        if position == 0:
-            theHeader = doc.CreateHeaderItem(header)
-            # Append the new header to the root item
-            root.InsertChildItem(theHeader,root.GetChildCount())
-        # Get the new or in-progress header item
-        headerItem = root.GetChildItem(root.GetChildCount()-1)
-        if not headerItem.GetType() ==  SpssClient.OutputItemType.HEAD:
-            root.RemoveChildItem(root.GetChildCount()-1)
-            headerItem =  root.GetChildItem(root.GetChildCount()-1)
-        headerItem = headerItem.GetSpecificType()
-        ###headerItem = root.GetChildItem(root.GetChildCount()-1).GetSpecificType()
         # Create a new chart item
         if labelparm:
             lbl = outlinelabel + str(labelparm[position])
@@ -71,6 +66,7 @@ def doinsertcharts(chartlist=None, header=None, outlinelabel=None, labelparm=Non
         outitem = doc.CreateImageChartItem(chart,f"{lbl}")
         # Append the new item to the header item
         headerItem.InsertChildItem(outitem, position)
+        
     if hidelog:
         hidethelog(itemlist)
     SpssClient.StopClient()
