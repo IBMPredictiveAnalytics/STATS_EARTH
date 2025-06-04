@@ -197,7 +197,7 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
     setuplocalization(domain)
     warns = Warn(procname=warningsprocname,omsid=omsid)
     
-    spsspkg.StartProcedure(gtxt("earth"),"STATS EARTH")
+    spsspkg.StartProcedure(gtxt("Earth"),"STATS EARTH")
     if (!any(estimation, prediction, modelplots, responseplots, varimpplot)) {
         warns$warn(gtxt("Procedure ended.  No output was requested."), dostop=TRUE)
     }
@@ -411,7 +411,7 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
         spsspkg.Submit(cmd)
     }
 
-    spsspkg.StartProcedure(gtxt("earth"),"STATS EARTH")
+    spsspkg.StartProcedure(gtxt("Earth"),"STATS EARTH")
         if (prediction) {
             if (exists("dta")) {
                 iddata = row.names(dta)
@@ -429,7 +429,7 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
         spsspkg.Submit(sprintf("Dataset Activate %s", preddataset))
     }
 
-    spsspkg.StartProcedure(gtxt("earth"),"STATS EARTH")
+    spsspkg.StartProcedure(gtxt("Earth"),"STATS EARTH")
     warns$display(inproc=FALSE)
 }
 
