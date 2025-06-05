@@ -198,6 +198,9 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
     warns = Warn(procname=warningsprocname,omsid=omsid)
     
     spsspkg.StartProcedure(gtxt("Earth"),"STATS EARTH")
+    if (!spsspkg.IsUTF8mode()) {
+        warns$warn(gtxt("This procedure requires SPSS to be in Unicode mode"), dostop=TRUE)
+    }
     if (!any(estimation, prediction, modelplots, responseplots, varimpplot)) {
         warns$warn(gtxt("Procedure ended.  No output was requested."), dostop=TRUE)
     }
@@ -275,10 +278,21 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
                 dostop=TRUE)
         }
         indvarsplus = paste(indvars, collapse="+")
+        allvars = c(depvar, indvars)
+        # check for valid names in R
+        tryCatch(
+            {
+            for (ch in allvars) {
+                xxx = str2lang(ch)
+            }
+            },
+            error = function(e) {warns$warn(gtxtf("%s is not a valid R variable name.  Please rename it", ch),
+                dostop=TRUE)}
+        )
+        
         f = paste(depvar, indvarsplus, sep="~", collapse="")
         ###save(indvars, depvar, indvarsplus, f, file="c:/temp/frml.rdata")
         f = as.formula(f)
-        allvars = c(depvar, indvars)
         if (ncross > 1 && nfold <= 1) {
             ncross = 1
             warns$warn(gtxt("Number of folds must be > 1 to use multiple crossvalidation.  Ignorning"),
@@ -398,17 +412,29 @@ doearth<-function(depvar=NULL, indvars=NULL, linearvars=NULL, idvar=NULL, family
         f = file(pfilelist, open="w")
         for (line in plotfiles) {
             writeLines(line, f)
-            print(f)
+            ###print(f)
         }
         close(f)
 
-        outlinelabel = sprintf("Variable: %s.  Chart ", paste(depvar, collapse=" "))
+        #outlinelabel = sprintf("Variable: %s.  Chart %s ", )
+        outlinelabel = "Chart"
         labelparm = list()
         
         ###cmd = sprintf("STATS INSERT CHART CHARTLIST='%s' HEADER='Earth' OUTLINELABEL='%s ' LABELPARM = %s HIDELOG=%s", 
-        cmd = sprintf("STATS INSERT CHART CHARTLIST='%s' HEADER='Earth' OUTLINELABEL='%s ' HIDELOG=%s", 
-            pfilelist, outlinelabel, TRUE)
-        spsspkg.Submit(cmd)
+        
+        # cmd = sprintf("STATS INSERT CHART CHARTLIST='%s' HEADER='Earth' OUTLINELABEL='%s ' HIDELOG=%s", 
+        #     pfilelist, outlinelabel, TRUE)
+        cmd = sprintf('STATS INSERT CHART HIDELOG=FALSE CHARTLIST="%s" HEADER="Earth" OUTLINELABEL="%s "', 
+                      pfilelist, outlinelabel)
+        # STATS INSERT CHART's xml file is not read on first invocation after installation
+
+        tryCatch(
+            spsspkg.Submit(cmd),
+            error = function(e) {
+                print(e)
+                print("Please restart SPSS Statistics to complete installation of this command")
+            }
+        )
     }
 
     spsspkg.StartProcedure(gtxt("Earth"),"STATS EARTH")
@@ -757,9 +783,14 @@ csvtospss = function(preddataset, dict, preds) {
     # dict is the spss dictionary object for the prediction data
     # preds is the data
     
+    # due to locale and encoding issues, we can't use a simple Submit
+    # to do the Submit, so a temporary file with forced
+    # encoding setting and INSERT is used
+    
     csvfile = tempfile("csvpred", tmpdir=tempdir(), fileext=".csv")
     write.csv(preds, file=csvfile, row.names=FALSE)
     spsscmd = sprintf('
+* Encoding: UTF-8.
         PRESERVE.
         SET DECIMAL DOT.
         GET DATA  /TYPE=TXT
@@ -784,13 +815,15 @@ csvtospss = function(preddataset, dict, preds) {
     varspecs = paste(varspecs, collapse="\n")
     activedataset = getactivedsname()
     cmd = paste(spsscmd, varspecs, ".\n", sprintf("dataset name %s.", preddataset), collapse="\n")
-    spsspkg.Submit(cmd)
+    syntemp = tempfile("csvsyn", tmpdir=tempdir(), fileext=".sps")
+    writeLines(cmd, con=syntemp, useBytes=TRUE)
+    spsspkg.Submit(sprintf("INSERT FILE='%s' ENCODING='UTF8'", syntemp))
     spsspkg.Submit("RESTORE.")
     spsspkg.Submit(sprintf("DATASET ACTIVATE %s.", activedataset))
     spsspkg.Submit("EXECUTE")
     unlink(csvfile)
+    unlink(syntemp)
 }
-
 # subpunct approximates characters invalid in SPSS variable names
 subpunct = "[-’‘%&'()*+,/:;<=>?\\^`{|}~’]"
 fixnames = function(names) {
