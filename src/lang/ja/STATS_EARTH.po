@@ -1,0 +1,283 @@
+#/***********************************************************************
+# * Licensed Materials - Property of IBM 
+# *
+# * IBM SPSS Products: Statistics Common
+# *
+# * (C) Copyright IBM Corp. 1989, 2025
+# *
+# * US Government Users Restricted Rights - Use, duplication or disclosure
+# * restricted by GSA ADP Schedule Contract with IBM Corp. 
+# ************************************************************************/
+
+msgid ""
+msgstr ""
+"Project-Id-Version: STATS_EARTH 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-07 15:02+0530\n"
+"PO-Revision-Date: 2025-07-07 15:02+0530\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: STATS_EARTH.R:65
+msgid "End of procedure"
+msgstr "手順の終わり"
+
+#: STATS_EARTH.R:95
+msgid "Message Number"
+msgstr "メッセージ番号"
+
+#: STATS_EARTH.R:130
+#, c-format
+msgid "Invalid variable name: %s"
+msgstr "無効な変数名です: %s"
+
+#: STATS_EARTH.R:152
+#, c-format
+msgid "Linear variables must be scale level: %s"
+msgstr "線形変数はスケール・レベルである必要があります: %s"
+
+#: STATS_EARTH.R:180
+msgid "Earth"
+msgstr "earth"
+
+#: STATS_EARTH.R:181
+msgid "Earth Warnings"
+msgstr "earth警告"
+
+#: STATS_EARTH.R:200 STATS_EARTH.R:414 STATS_EARTH.R:432
+msgid "earth"
+msgstr "earth"
+
+#: STATS_EARTH.R:202
+msgid "Procedure ended.  No output was requested."
+msgstr "手順は完了しました。  出力は要求されませんでした。"
+
+#: STATS_EARTH.R:206
+msgid "Case weights are ignored by this procedure"
+msgstr "この手順では、ケース・ウェイトは無視されます。"
+
+#: STATS_EARTH.R:224
+#, c-format
+msgid "error loading model file: %s"
+msgstr "モデル・ファイルのロード・エラー: %s"
+
+#: STATS_EARTH.R:230
+#, c-format
+msgid ""
+"Model loaded from file: %s and will be used for any requested plots and "
+"predictions"
+msgstr "ファイル: %s からロードされたモデルは、要求されたプロットや予測に使用されます。"
+
+#: STATS_EARTH.R:233
+msgid "Model will not be resaved"
+msgstr "モデルは再保存されません"
+
+#: STATS_EARTH.R:240
+msgid "An ID variable must be specified if predictions are requested"
+msgstr "予測が要求される場合は、ID変数を指定する必要があります"
+
+#: STATS_EARTH.R:245
+msgid ""
+"The prediction dataset specified already exists.  Please close it or choose "
+"a different name"
+msgstr "指定された予測データ・セットはすでに存在しています。  データ・セットを閉じるか、別の名前を選択してください"
+
+#: STATS_EARTH.R:249
+msgid ""
+"The input dataset must have a name if doing predictions.  Please assign one "
+"and rerun the procedure."
+msgstr "予測を行うには、入力データ・セットに名前を付ける必要があります。  名前を割り当ててから、手順を再実行してください。"
+
+#: STATS_EARTH.R:261
+msgid "Split files is not supported by this procedure"
+msgstr "この手順では、ファイルの分割はサポートされていません"
+
+#: STATS_EARTH.R:270
+msgid ""
+"Dependent and independent or linear variables must be specified when "
+"estimating"
+msgstr "推定を行うには、従属変数と、独立変数または線形変数を指定する必要があります"
+
+#: STATS_EARTH.R:274
+msgid "The dependent variable appears in the independent variable list"
+msgstr "従属変数が独立変数リストに含まれています"
+
+#: STATS_EARTH.R:284
+msgid ""
+"Number of folds must be > 1 to use multiple crossvalidation.  Ignorning"
+msgstr "多重交差検証を使用するには、foldの数を1より大きい数にする必要があります。  無視されています"
+
+#: STATS_EARTH.R:293
+msgid "error fetching data"
+msgstr "データの取得時にエラーが発生しました"
+
+#: STATS_EARTH.R:300
+msgid "There are no complete cases in the data"
+msgstr "データに完全なケースは含まれていません"
+
+#: STATS_EARTH.R:325
+msgid "error estimating equation"
+msgstr "推定式の計算中にエラーが発生しました"
+
+#: STATS_EARTH.R:346
+#, c-format
+msgid "Estimated model saved to file %s"
+msgstr "推定モデルはファイル%sに保存されました"
+
+#: STATS_EARTH.R:348
+#, c-format
+msgid "Model saving to file %sfailed"
+msgstr "ファイル%sへのモデルの保存に失敗しました"
+
+#: STATS_EARTH.R:356
+msgid "There is no estimated model to use for plots."
+msgstr "プロットに使用できる推定モデルはありません。"
+
+#: STATS_EARTH.R:454
+msgid "Generalized Cross Validation"
+msgstr "一般化された交差検証"
+
+#: STATS_EARTH.R:455
+msgid "Residual Sum of Squares"
+msgstr "残差平方和"
+
+#: STATS_EARTH.R:455
+msgid "Standardized GCV"
+msgstr "標準化されたGCV"
+
+#: STATS_EARTH.R:455
+msgid "R Squared"
+msgstr "R2 乗"
+
+#: STATS_EARTH.R:461
+msgid "Mean CV Rsq"
+msgstr "平均CV R²"
+
+#: STATS_EARTH.R:465
+msgid "Fit Summary"
+msgstr "適合度の概要"
+
+#: STATS_EARTH.R:466
+msgid "Summary"
+msgstr "サマリー"
+
+#: STATS_EARTH.R:468 STATS_EARTH.R:479 STATS_EARTH.R:493
+#, c-format
+msgid "Dependent variable: %s"
+msgstr "従属変数: %s"
+
+#: STATS_EARTH.R:476
+msgid "Coefficients"
+msgstr "係数"
+
+#: STATS_EARTH.R:477
+msgid "Earth Coefficients"
+msgstr "earth係数"
+
+#: STATS_EARTH.R:485
+msgid "subsets Including Variable"
+msgstr "変数を含むサブセット"
+
+#: STATS_EARTH.R:485
+msgid "Generalized Cross Validation Reduction"
+msgstr "一般化された交差検証の削減"
+
+#: STATS_EARTH.R:486
+msgid "Residual Sum of Squares Reduction"
+msgstr "残差平方和の削減"
+
+#: STATS_EARTH.R:490 STATS_EARTH.R:491
+msgid "Variable Importance"
+msgstr "変数の重要度"
+
+#: STATS_EARTH.R:504
+msgid "Dependent Variable"
+msgstr "従属変数"
+
+#: STATS_EARTH.R:505
+msgid "Independent Variables"
+msgstr "独立変数"
+
+#: STATS_EARTH.R:506
+msgid "Maximum Interaction Degree Allowed"
+msgstr "許容される最大相互作用次数"
+
+#: STATS_EARTH.R:507
+msgid "Cross-Validation Folds"
+msgstr "交差検証群"
+
+#: STATS_EARTH.R:508
+msgid "Cross Validations"
+msgstr "交差検証"
+
+#: STATS_EARTH.R:509
+msgid "Distribution Family"
+msgstr "分布群"
+
+#: STATS_EARTH.R:510
+msgid "Maximum Terms"
+msgstr "最大項数"
+
+#: STATS_EARTH.R:511
+msgid "Estimation Date"
+msgstr "推定日"
+
+#: STATS_EARTH.R:512
+msgid "Number of Complete Cases"
+msgstr "完全ケース数"
+
+#: STATS_EARTH.R:513
+msgid "Prediction Dataset"
+msgstr "予測データ・セット"
+
+#: STATS_EARTH.R:514
+msgid "Prediction Threshold"
+msgstr "予測しきい値"
+
+#: STATS_EARTH.R:515
+msgid "Saved Model File"
+msgstr "保存済みモデル・ファイル"
+
+#: STATS_EARTH.R:536 STATS_EARTH.R:537
+msgid "Earth Parameters"
+msgstr "earthパラメーター"
+
+#: STATS_EARTH.R:539
+#, c-format
+msgid "Computations from R earth package, version %s"
+msgstr "Rのearthパッケージ (バージョン%s) による計算"
+
+#: STATS_EARTH.R:556
+msgid "Distribution plots are not available for scale variables"
+msgstr "スケール変数には分布図を使用できません"
+
+#: STATS_EARTH.R:614
+#, c-format
+msgid ""
+"Plot drawing failure\n"
+"%s"
+msgstr ""
+"プロットの描画に失敗しました\n"
+"%s"
+
+#: STATS_EARTH.R:670
+msgid "Prediction type class is only for factors"
+msgstr "予測タイプ「class」は、因子変数に対してのみ使用できます"
+
+#: STATS_EARTH.R:676
+msgid ""
+"No ID variable was specified in estimation.  Predictions cannot be made"
+msgstr "推定にID変数が指定されていません  予測はできません"
+
+#: STATS_EARTH.R:694
+msgid "error fetching new prediction data"
+msgstr "新しい予測データ取得時のエラー"
+
+#: STATS_EARTH.R:699
+msgid "Prediction data source is new data"
+msgstr "予測データ・ソースに新規データが使用されます"

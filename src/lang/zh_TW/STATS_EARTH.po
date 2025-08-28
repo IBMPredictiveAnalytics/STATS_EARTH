@@ -1,0 +1,283 @@
+#/***********************************************************************
+# * Licensed Materials - Property of IBM 
+# *
+# * IBM SPSS Products: Statistics Common
+# *
+# * (C) Copyright IBM Corp. 1989, 2025
+# *
+# * US Government Users Restricted Rights - Use, duplication or disclosure
+# * restricted by GSA ADP Schedule Contract with IBM Corp. 
+# ************************************************************************/
+
+msgid ""
+msgstr ""
+"Project-Id-Version: STATS_EARTH 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-07 15:02+0530\n"
+"PO-Revision-Date: 2025-07-07 15:02+0530\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: STATS_EARTH.R:65
+msgid "End of procedure"
+msgstr "程序的結尾"
+
+#: STATS_EARTH.R:95
+msgid "Message Number"
+msgstr "訊息號碼"
+
+#: STATS_EARTH.R:130
+#, c-format
+msgid "Invalid variable name: %s"
+msgstr "變數名稱無效：%s"
+
+#: STATS_EARTH.R:152
+#, c-format
+msgid "Linear variables must be scale level: %s"
+msgstr "線性變數必須是尺度層級：%s"
+
+#: STATS_EARTH.R:180
+msgid "Earth"
+msgstr "地球"
+
+#: STATS_EARTH.R:181
+msgid "Earth Warnings"
+msgstr "地球警告"
+
+#: STATS_EARTH.R:200 STATS_EARTH.R:414 STATS_EARTH.R:432
+msgid "earth"
+msgstr "地球"
+
+#: STATS_EARTH.R:202
+msgid "Procedure ended.  No output was requested."
+msgstr "程序結束。  未要求輸出。"
+
+#: STATS_EARTH.R:206
+msgid "Case weights are ignored by this procedure"
+msgstr "此程序會忽略案例權重"
+
+#: STATS_EARTH.R:224
+#, c-format
+msgid "error loading model file: %s"
+msgstr "載入模型檔案時發生錯誤：%s"
+
+#: STATS_EARTH.R:230
+#, c-format
+msgid ""
+"Model loaded from file: %s and will be used for any requested plots and "
+"predictions"
+msgstr "模型載入自檔案：%s，並將用於任何要求的圖形和預測"
+
+#: STATS_EARTH.R:233
+msgid "Model will not be resaved"
+msgstr "模型不會重新儲存"
+
+#: STATS_EARTH.R:240
+msgid "An ID variable must be specified if predictions are requested"
+msgstr "如果要求進行預測，則必須指定 ID 變數"
+
+#: STATS_EARTH.R:245
+msgid ""
+"The prediction dataset specified already exists.  Please close it or choose "
+"a different name"
+msgstr "指定的預測資料集已經存在。  請將其關閉或選擇其他名稱"
+
+#: STATS_EARTH.R:249
+msgid ""
+"The input dataset must have a name if doing predictions.  Please assign one "
+"and rerun the procedure."
+msgstr "如果要進行預測，輸入資料集必須有一個名稱。  請指派一個，並重新執行程序。"
+
+#: STATS_EARTH.R:261
+msgid "Split files is not supported by this procedure"
+msgstr "本程序不支援分割檔案"
+
+#: STATS_EARTH.R:270
+msgid ""
+"Dependent and independent or linear variables must be specified when "
+"estimating"
+msgstr "預估時必須指定依變數和自變數或線性變數"
+
+#: STATS_EARTH.R:274
+msgid "The dependent variable appears in the independent variable list"
+msgstr "依變數出現在自變數清單中"
+
+#: STATS_EARTH.R:284
+msgid ""
+"Number of folds must be > 1 to use multiple crossvalidation.  Ignorning"
+msgstr "要使用多重交叉驗證， fold 數必須 > 1。  忽略"
+
+#: STATS_EARTH.R:293
+msgid "error fetching data"
+msgstr "提取資料時發生錯誤"
+
+#: STATS_EARTH.R:300
+msgid "There are no complete cases in the data"
+msgstr "資料中沒有完整的案例"
+
+#: STATS_EARTH.R:325
+msgid "error estimating equation"
+msgstr "預估方程式時發生錯誤"
+
+#: STATS_EARTH.R:346
+#, c-format
+msgid "Estimated model saved to file %s"
+msgstr "預估的模型儲存至檔案 %s"
+
+#: STATS_EARTH.R:348
+#, c-format
+msgid "Model saving to file %sfailed"
+msgstr "模型儲存至檔案 %s 失敗"
+
+#: STATS_EARTH.R:356
+msgid "There is no estimated model to use for plots."
+msgstr "沒有預估的模型可用於圖形。"
+
+#: STATS_EARTH.R:454
+msgid "Generalized Cross Validation"
+msgstr "通用交叉驗證"
+
+#: STATS_EARTH.R:455
+msgid "Residual Sum of Squares"
+msgstr "殘差平方和"
+
+#: STATS_EARTH.R:455
+msgid "Standardized GCV"
+msgstr "標準化 GCV"
+
+#: STATS_EARTH.R:455
+msgid "R Squared"
+msgstr "R 平方"
+
+#: STATS_EARTH.R:461
+msgid "Mean CV Rsq"
+msgstr "平均 CV R²"
+
+#: STATS_EARTH.R:465
+msgid "Fit Summary"
+msgstr "適合摘要"
+
+#: STATS_EARTH.R:466
+msgid "Summary"
+msgstr "摘要"
+
+#: STATS_EARTH.R:468 STATS_EARTH.R:479 STATS_EARTH.R:493
+#, c-format
+msgid "Dependent variable: %s"
+msgstr "依變數：%s"
+
+#: STATS_EARTH.R:476
+msgid "Coefficients"
+msgstr "係數"
+
+#: STATS_EARTH.R:477
+msgid "Earth Coefficients"
+msgstr "地球係數"
+
+#: STATS_EARTH.R:485
+msgid "subsets Including Variable"
+msgstr "子集包括變數"
+
+#: STATS_EARTH.R:485
+msgid "Generalized Cross Validation Reduction"
+msgstr "通用交叉驗證誤差降低量"
+
+#: STATS_EARTH.R:486
+msgid "Residual Sum of Squares Reduction"
+msgstr "殘差平方和降低量"
+
+#: STATS_EARTH.R:490 STATS_EARTH.R:491
+msgid "Variable Importance"
+msgstr "變數重要性"
+
+#: STATS_EARTH.R:504
+msgid "Dependent Variable"
+msgstr "應變數(D)"
+
+#: STATS_EARTH.R:505
+msgid "Independent Variables"
+msgstr "自變數(V)"
+
+#: STATS_EARTH.R:506
+msgid "Maximum Interaction Degree Allowed"
+msgstr "容許的最大互動程度"
+
+#: STATS_EARTH.R:507
+msgid "Cross-Validation Folds"
+msgstr "交叉驗證摺疊"
+
+#: STATS_EARTH.R:508
+msgid "Cross Validations"
+msgstr "交叉驗證"
+
+#: STATS_EARTH.R:509
+msgid "Distribution Family"
+msgstr "分佈系列"
+
+#: STATS_EARTH.R:510
+msgid "Maximum Terms"
+msgstr "最大項數"
+
+#: STATS_EARTH.R:511
+msgid "Estimation Date"
+msgstr "預估日期"
+
+#: STATS_EARTH.R:512
+msgid "Number of Complete Cases"
+msgstr "完整案例數"
+
+#: STATS_EARTH.R:513
+msgid "Prediction Dataset"
+msgstr "預測資料集"
+
+#: STATS_EARTH.R:514
+msgid "Prediction Threshold"
+msgstr "預測臨界值"
+
+#: STATS_EARTH.R:515
+msgid "Saved Model File"
+msgstr "儲存的模型檔案"
+
+#: STATS_EARTH.R:536 STATS_EARTH.R:537
+msgid "Earth Parameters"
+msgstr "地球參數"
+
+#: STATS_EARTH.R:539
+#, c-format
+msgid "Computations from R earth package, version %s"
+msgstr "計算來自 R earth 套件，版本 %s"
+
+#: STATS_EARTH.R:556
+msgid "Distribution plots are not available for scale variables"
+msgstr "尺度變數無法使用分佈圖"
+
+#: STATS_EARTH.R:614
+#, c-format
+msgid ""
+"Plot drawing failure\n"
+"%s"
+msgstr ""
+"繪圖失敗\n"
+"%s"
+
+#: STATS_EARTH.R:670
+msgid "Prediction type class is only for factors"
+msgstr "預測類型類別僅適用於因數"
+
+#: STATS_EARTH.R:676
+msgid ""
+"No ID variable was specified in estimation.  Predictions cannot be made"
+msgstr "估算時未指定 ID 變數。  無法預測"
+
+#: STATS_EARTH.R:694
+msgid "error fetching new prediction data"
+msgstr "提取新預測資料時發生錯誤"
+
+#: STATS_EARTH.R:699
+msgid "Prediction data source is new data"
+msgstr "預測資料來源為新資料"

@@ -9,11 +9,11 @@ Description: This procedure implements Multiple Adaptive Regression Sp
  line models that find nonlinearities and interaction terms in general
  ized linear models and do emplirical variable selection.
 Author: Jon K. Peck
-Version: 1.0.0
+Version: 1.0.1
 Product-Version: 31
 Date: 4/1/2025
 Categories: MARS, EARTH, regression
 Plugins: Python,R
 Python-Version: 3
 R-Packages: earth
-Translation-Catalogues: 
+Translation-Catalogues: lang

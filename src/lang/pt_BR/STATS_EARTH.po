@@ -1,0 +1,298 @@
+#/***********************************************************************
+# * Licensed Materials - Property of IBM 
+# *
+# * IBM SPSS Products: Statistics Common
+# *
+# * (C) Copyright IBM Corp. 1989, 2025
+# *
+# * US Government Users Restricted Rights - Use, duplication or disclosure
+# * restricted by GSA ADP Schedule Contract with IBM Corp. 
+# ************************************************************************/
+
+msgid ""
+msgstr ""
+"Project-Id-Version: STATS_EARTH 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-07 15:02+0530\n"
+"PO-Revision-Date: 2025-07-07 15:02+0530\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+
+#: STATS_EARTH.R:65
+msgid "End of procedure"
+msgstr "Fim do procedimento"
+
+#: STATS_EARTH.R:95
+msgid "Message Number"
+msgstr "Número da mensagem"
+
+#: STATS_EARTH.R:130
+#, c-format
+msgid "Invalid variable name: %s"
+msgstr "Nome de variável inválido: %s"
+
+#: STATS_EARTH.R:152
+#, c-format
+msgid "Linear variables must be scale level: %s"
+msgstr "As variáveis lineares devem estar em nível de escala: %s"
+
+#: STATS_EARTH.R:180
+msgid "Earth"
+msgstr "Earth"
+
+#: STATS_EARTH.R:181
+msgid "Earth Warnings"
+msgstr "Avisos do earth"
+
+#: STATS_EARTH.R:200 STATS_EARTH.R:414 STATS_EARTH.R:432
+msgid "earth"
+msgstr "earth"
+
+#: STATS_EARTH.R:202
+msgid "Procedure ended.  No output was requested."
+msgstr "Procedimento encerrado.  Nenhuma saída foi solicitada."
+
+#: STATS_EARTH.R:206
+msgid "Case weights are ignored by this procedure"
+msgstr "As ponderações de caso são ignoradas por este procedimento"
+
+#: STATS_EARTH.R:224
+#, c-format
+msgid "error loading model file: %s"
+msgstr "erro ao carregar o arquivo de modelo: %s"
+
+#: STATS_EARTH.R:230
+#, c-format
+msgid ""
+"Model loaded from file: %s and will be used for any requested plots and "
+"predictions"
+msgstr ""
+"Modelo carregado do arquivo: %s e será usado para todos os gráficos e "
+"predições solicitados"
+
+#: STATS_EARTH.R:233
+msgid "Model will not be resaved"
+msgstr "O modelo não será salvo novamente"
+
+#: STATS_EARTH.R:240
+msgid "An ID variable must be specified if predictions are requested"
+msgstr ""
+"Deve-se especificar uma variável de ID caso predições sejam solicitadas"
+
+#: STATS_EARTH.R:245
+msgid ""
+"The prediction dataset specified already exists.  Please close it or choose "
+"a different name"
+msgstr ""
+"O conjunto de dados de predição especificado já existe.  Feche-o ou escolha "
+"um nome diferente"
+
+#: STATS_EARTH.R:249
+msgid ""
+"The input dataset must have a name if doing predictions.  Please assign one "
+"and rerun the procedure."
+msgstr ""
+"O conjunto de dados de entrada deve ter um nome caso esteja fazendo "
+"predições  Designe um e execute novamente o procedimento"
+
+#: STATS_EARTH.R:261
+msgid "Split files is not supported by this procedure"
+msgstr "A divisão de arquivos não é suportada por este procedimento"
+
+#: STATS_EARTH.R:270
+msgid ""
+"Dependent and independent or linear variables must be specified when "
+"estimating"
+msgstr ""
+"Variáveis dependentes e independentes ou lineares devem ser especificadas ao"
+" estimar"
+
+#: STATS_EARTH.R:274
+msgid "The dependent variable appears in the independent variable list"
+msgstr "A variável dependente aparece na lista de variáveis independentes"
+
+#: STATS_EARTH.R:284
+msgid ""
+"Number of folds must be > 1 to use multiple crossvalidation.  Ignorning"
+msgstr ""
+"O número de dobras deve ser > 1 para usar validação cruzada múltipla.  "
+"Ignorando"
+
+#: STATS_EARTH.R:293
+msgid "error fetching data"
+msgstr "erro ao buscar dados"
+
+#: STATS_EARTH.R:300
+msgid "There are no complete cases in the data"
+msgstr "Não há casos completos nos dados"
+
+#: STATS_EARTH.R:325
+msgid "error estimating equation"
+msgstr "erro ao estimar a equação"
+
+#: STATS_EARTH.R:346
+#, c-format
+msgid "Estimated model saved to file %s"
+msgstr "Modelo estimado salvo no arquivo %s"
+
+#: STATS_EARTH.R:348
+#, c-format
+msgid "Model saving to file %sfailed"
+msgstr "Falha ao salvar o modelo no arquivo %s"
+
+#: STATS_EARTH.R:356
+msgid "There is no estimated model to use for plots."
+msgstr "Não há modelo estimado a ser usado para os gráficos."
+
+#: STATS_EARTH.R:454
+msgid "Generalized Cross Validation"
+msgstr "Validação cruzada generalizada"
+
+#: STATS_EARTH.R:455
+msgid "Residual Sum of Squares"
+msgstr "Soma de quadrados dos resíduos"
+
+#: STATS_EARTH.R:455
+msgid "Standardized GCV"
+msgstr "GCV padronizado"
+
+#: STATS_EARTH.R:455
+msgid "R Squared"
+msgstr "R ao quadrado"
+
+#: STATS_EARTH.R:461
+msgid "Mean CV Rsq"
+msgstr "CV médio Rsq"
+
+#: STATS_EARTH.R:465
+msgid "Fit Summary"
+msgstr "Resumo do ajuste"
+
+#: STATS_EARTH.R:466
+msgid "Summary"
+msgstr "Resumo"
+
+#: STATS_EARTH.R:468 STATS_EARTH.R:479 STATS_EARTH.R:493
+#, c-format
+msgid "Dependent variable: %s"
+msgstr "Variável dependente: %s"
+
+#: STATS_EARTH.R:476
+msgid "Coefficients"
+msgstr "Coeficientes"
+
+#: STATS_EARTH.R:477
+msgid "Earth Coefficients"
+msgstr "Coeficientes earth"
+
+#: STATS_EARTH.R:485
+msgid "subsets Including Variable"
+msgstr "subconjuntos incluindo variáveis"
+
+#: STATS_EARTH.R:485
+msgid "Generalized Cross Validation Reduction"
+msgstr "Redução da validação cruzada generalizada"
+
+#: STATS_EARTH.R:486
+msgid "Residual Sum of Squares Reduction"
+msgstr "Redução da soma de quadrados dos resíduos"
+
+#: STATS_EARTH.R:490 STATS_EARTH.R:491
+msgid "Variable Importance"
+msgstr "Importância da variável"
+
+#: STATS_EARTH.R:504
+msgid "Dependent Variable"
+msgstr "Variável dependente"
+
+#: STATS_EARTH.R:505
+msgid "Independent Variables"
+msgstr "Variáveis independentes"
+
+#: STATS_EARTH.R:506
+msgid "Maximum Interaction Degree Allowed"
+msgstr "Grau máximo de interação permitido"
+
+#: STATS_EARTH.R:507
+msgid "Cross-Validation Folds"
+msgstr "Dobras de validação cruzada"
+
+#: STATS_EARTH.R:508
+msgid "Cross Validations"
+msgstr "Validações cruzadas"
+
+#: STATS_EARTH.R:509
+msgid "Distribution Family"
+msgstr "Família de Distribuição"
+
+#: STATS_EARTH.R:510
+msgid "Maximum Terms"
+msgstr "Máximo de termos"
+
+#: STATS_EARTH.R:511
+msgid "Estimation Date"
+msgstr "Data estimada"
+
+#: STATS_EARTH.R:512
+msgid "Number of Complete Cases"
+msgstr "Número de casos concluídos"
+
+#: STATS_EARTH.R:513
+msgid "Prediction Dataset"
+msgstr "Conjunto de dados de predição"
+
+#: STATS_EARTH.R:514
+msgid "Prediction Threshold"
+msgstr "Limite de predição"
+
+#: STATS_EARTH.R:515
+msgid "Saved Model File"
+msgstr "Arquivo de modelo salvo"
+
+#: STATS_EARTH.R:536 STATS_EARTH.R:537
+msgid "Earth Parameters"
+msgstr "Parâmetros earth"
+
+#: STATS_EARTH.R:539
+#, c-format
+msgid "Computations from R earth package, version %s"
+msgstr "Cálculos do pacote earth do R, versão %s"
+
+#: STATS_EARTH.R:556
+msgid "Distribution plots are not available for scale variables"
+msgstr ""
+"Os gráficos de distribuição não estão disponíveis para variáveis de escala"
+
+#: STATS_EARTH.R:614
+#, c-format
+msgid ""
+"Plot drawing failure\n"
+"%s"
+msgstr ""
+"Falha no desenho de gráfico\n"
+"%s"
+
+#: STATS_EARTH.R:670
+msgid "Prediction type class is only for factors"
+msgstr "A classe de tipo de predição é apenas para fatores"
+
+#: STATS_EARTH.R:676
+msgid ""
+"No ID variable was specified in estimation.  Predictions cannot be made"
+msgstr ""
+"Nenhuma variável de ID foi especificada na estimativa.  Não é possível fazer"
+" predições"
+
+#: STATS_EARTH.R:694
+msgid "error fetching new prediction data"
+msgstr "erro ao buscar novos dados de predição"
+
+#: STATS_EARTH.R:699
+msgid "Prediction data source is new data"
+msgstr "A origem de dados de predição é um novo dado"
