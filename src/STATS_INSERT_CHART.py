@@ -4,6 +4,7 @@
 # 13-Nov-2024  Original vesion
 # 09-Dec-2024  update to handle multiple charts on one call via a file of names
 # 27-apr-2025  minor edits
+# 19-mar=2026  rewrite INSERT CHART to get around SpssClient api error
 
 # Author: Jon K. Peck
 
@@ -27,17 +28,22 @@ def doinsertcharts(chartlist=None, header=None, outlinelabel=None, labelparm=Non
     """
     # debugging
             # makes debug apply only to the current thread
-    try:
-        import wingdbstub
-        import threading
-        wingdbstub.Ensure()
-        wingdbstub.debugger.SetDebugThreads({threading.get_ident(): 1})
-    except:
-        pass
+    #try:
+        #import wingdbstub
+        #import threading
+        #wingdbstub.Ensure()
+        ####wingdbstub.debugger.SetDebugThreads({threading.get_ident(): 1})
+    #except:
+        #pass
 
     if chartlist is not None:
-        with open(chartlist) as f:
-            charts = f.readlines()
+        try:
+            with open(chartlist) as f:
+                charts = f.readlines()
+        except:
+            print("CHARTLIST file not found")
+            raise
+        
         charts = [item[:-1] for item in charts]  # eliminate newlines
     else:
         charts = None
@@ -47,25 +53,21 @@ def doinsertcharts(chartlist=None, header=None, outlinelabel=None, labelparm=Non
         raise ValueError("Missing keyword value")
     doc = SpssClient.GetDesignatedOutputDoc()
     itemlist = doc.GetOutputItems()
-    # Get the root header item
-    root = itemlist.GetItemAt(0).GetSpecificType()
-    theHeader = doc.CreateHeaderItem(header)
-    root.InsertChildItem(theHeader, root.GetChildCount())
-    headerItem = root.GetChildItem(root.GetChildCount()-1)
-    if not headerItem.GetType() ==  SpssClient.OutputItemType.HEAD:
-        root.RemoveChildItem(root.GetChildCount()-1)
-        headerItem =  root.GetChildItem(root.GetChildCount()-1)
-    headerItem = root.GetChildItem(root.GetChildCount()-1).GetSpecificType()
 
-    for position, chart in enumerate(charts):
-        # Create a new chart item
-        if labelparm:
-            lbl = outlinelabel + str(labelparm[position])
-        else:
-            lbl = outlinelabel
-        outitem = doc.CreateImageChartItem(chart,f"{lbl}")
-        # Append the new item to the header item
-        headerItem.InsertChildItem(outitem, position)
+    for index in range(itemlist.Size() - 1, -1, -1):
+        item = itemlist.GetItemAt(index)   # should not go past GetTreeLevel == 1
+        if item.GetType() in [SpssClient.OutputItemType.HEAD, SpssClient.OutputItemType.ROOT]:
+            itemsp = item.GetSpecificType()   
+            for position, chart in enumerate(charts):
+                # Create a new chart item
+                if labelparm:
+                    lbl = outlinelabel + str(labelparm[position])
+                else:
+                    lbl = outlinelabel
+                outitem = doc.CreateImageChartItem(chart,f"{lbl}")
+                # Append the new item to the header item
+                itemsp.InsertChildItem(outitem, itemsp.GetChildCount())
+            break
         
     if hidelog:
         hidethelog(itemlist)
@@ -87,7 +89,6 @@ def Run(args):
     """Execute the STATS INSERT CHART command"""
     
     args = args[list(args.keys())[0]]
-
     oobj = Syntax([
         Template("CHARTLIST", subc="",  ktype="str", var="chartlist", islist=False),
         Template("LABELPARM", subc="",  ktype="int", var="labelparm", islist=True),
